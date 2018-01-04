@@ -32,3 +32,4 @@ Luego se realiza la instalación, para esto debe tener privilegios de **sudoer**
 ```bash
 sudo python setup.py install
 ```
+
