@@ -1,11 +1,7 @@
 
-# coding: utf-8
-
-# In[20]:
-
-
+import matplotlib
+matplotlib.use('Agg')
 import MySQLdb
-get_ipython().magic(u'matplotlib inline')
 import matplotlib.pyplot as plt
 import datetime
 import numpy as np
@@ -21,9 +17,6 @@ from wmf import wmf
 from matplotlib.dates import DateFormatter
 
 
-# In[42]:
-
-
 # Cargar historia de maximos
 
 f=open('/media/nicolas/Home/Jupyter/Esneider/incendios_forestales/operacional/maximos_temp.bin','r')
@@ -31,13 +24,9 @@ serie_maximos=cPickle.load(f)
 f.close()
 
 
-# In[43]:
-
-
 # Consultar ultimo dia
 
 estaciones = ['205','203','202','206','204','68', '201','207','73', '82', '83', '84', '105', '122']
-#estaciones = ['83', '84', '105', '122']
 elevacion  = [ 1463, 1472, 2781, 1766, 1334, 1475, 1477, 2366, 1659,1452, 1353, 1877, 1791, 1735,  2056]
 path='/media/nicolas/Home/Jupyter/Esneider/incendios_forestales/operacional/'
 
@@ -91,9 +80,6 @@ for est in estaciones:
         pass
 
 
-# In[44]:
-
-
 def var2sandarize(var,method='std',rango=None):
     if method=='std':
         var=(var-var.mean())/var.std()
@@ -102,9 +88,6 @@ def var2sandarize(var,method='std',rango=None):
         if rango<>None:
             var=var*(rango[1]-rango[0])+rango[0]
     return var
-
-
-# In[45]:
 
 
 serie_ori_total = [] ; serie_date_total = []
@@ -119,9 +102,6 @@ for ser_ori,ult_dato,ser_date in zip(serie_maximos['serie_est_original'],est_max
     serie_date_total.append(sd)
 
 
-# In[46]:
-
-
 date1 = datetime.datetime(2017,7,1,0,0)
 date2 = date_ini
     
@@ -133,9 +113,7 @@ while fec_dd <= date2:
     fec_dd = fec_dd + datetime.timedelta(days=1)
 
 
-# ## Grafico de estandarizadas totales
-
-# In[47]:
+ ## Grafico de estandarizadas totales
 
 
 import matplotlib
@@ -158,7 +136,7 @@ for r in range(1,len(reportados),1):
 #-------------------------------------------------
         
 plt.close('all')
-fig = plt.figure(figsize=(20,15),facecolor='w',edgecolor='w')
+fig = plt.figure(figsize=(15,8),facecolor='w',edgecolor='w')
 
 resumen_std = []
 
@@ -182,7 +160,7 @@ for f in fec_freq:
 
 plt.plot(fec_freq[0:-1],dato,lw=3,c='k')
 plt.scatter(fec_freq[0:-1],dato,s=30,color='k')
-matplotlib.rcParams.update({'font.size': 15})
+matplotlib.rcParams.update({'font.size': 12})
 
 # Agregar incendios reportados
 
@@ -201,12 +179,14 @@ plt.xlim(date1+datetime.timedelta(hours=8),date2+datetime.timedelta(hours=4))
 #plt.xlim(date_fin-datetime.timedelta(days=30),date_fin+datetime.timedelta(hours=4))
 plt.legend()
 plt.ylim(-4,3)
-plt.show()
+plt.ylabel('$Anomalia$')
+plt.xlabel('$Tiempo$')
+plt.savefig('/media/nicolas/Home/Jupyter/Esneider/incendios_forestales/operacional/factor_temp_hist.png')
 
 #----------------------------------------------------------------------------
 
 plt.close('all')
-fig = plt.figure(figsize=(20,15),facecolor='w',edgecolor='w')
+fig = plt.figure(figsize=(15,8),facecolor='w',edgecolor='w')
 
 resumen_std = []
 
@@ -230,7 +210,7 @@ for f in fec_freq:
 
 plt.plot(fec_freq[0:-1],dato,lw=3,c='k')
 plt.scatter(fec_freq[0:-1],dato,s=30,color='k')
-matplotlib.rcParams.update({'font.size': 15})
+matplotlib.rcParams.update({'font.size': 12})
 
 # Agregar incendios reportados
 
@@ -248,13 +228,13 @@ plt.fill_between(fec_freq[0:-1],np.percentile(inc_dato,30),3,color='red', alpha=
 #plt.xlim(date_ini+datetime.timedelta(hours=8),date_fin+datetime.timedelta(hours=4))
 plt.xlim(date2-datetime.timedelta(days=30),date2+datetime.timedelta(hours=4))
 plt.legend()
+plt.ylabel('$Anomalia$')
+plt.xlabel('$Tiempo$')
 plt.ylim(-3,3)
-plt.show()
+plt.savefig('/media/nicolas/Home/Jupyter/Esneider/incendios_forestales/operacional/factor_temp_1mes.png')
 
 
-# ## Definir en que region se ubica el dia actual
-
-# In[48]:
+## Definir en que region se ubica el dia actual
 
 
 ult_std = dato[len(dato)-1]
@@ -266,9 +246,7 @@ if (ult_std >= np.percentile(inc_dato,5)) and (ult_std <= np.percentile(inc_dato
 print region
 
 
-# ## Guardar archivo definitivo del dia
-
-# In[49]:
+## Guardar archivo definitivo del dia
 
 
 yy = datel.year ; mm = datel.month ; dd = datel.day
